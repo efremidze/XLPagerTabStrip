@@ -325,6 +325,26 @@
                                             <segue destination="X2Z-nL-0dy" kind="presentation" id="cSg-pT-kjb"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="41Y-cN-uYG" style="IBUITableViewCellStyleDefault" id="PSE-S1-vza">
+                                        <rect key="frame" x="0.0" y="247" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="PSE-S1-vza" id="QTp-hq-TTJ">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Pinterest Example" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="41Y-cN-uYG">
+                                                    <rect key="frame" x="15" y="0.0" width="570" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="43f-dC-KhS" kind="presentation" id="YKi-1g-AY0"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -525,6 +545,64 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ls9-Xb-7by" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3018" y="514.5"/>
+        </scene>
+        <!--Pinterest Example View Controller-->
+        <scene sceneID="eFp-6w-JV1">
+            <objects>
+                <viewController id="gSw-2t-EVE" customClass="PinterestExampleViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="dQX-ly-uw9"/>
+                        <viewControllerLayoutGuide type="bottom" id="GRh-zY-L0b"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="yWr-Wt-93c">
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zzq-kH-cMx">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                                <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                            </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QK7-bI-a1t">
+                                <rect key="frame" x="12" y="491" width="84" height="33"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="84" id="IBj-2C-gqC"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="17"/>
+                                <state key="normal" title="CLOSE"/>
+                                <connections>
+                                    <action selector="closeAction:" destination="gSw-2t-EVE" eventType="touchUpInside" id="NPI-z2-Cn1"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="zzq-kH-cMx" secondAttribute="trailing" id="F2R-69-fds"/>
+                            <constraint firstItem="zzq-kH-cMx" firstAttribute="leading" secondItem="yWr-Wt-93c" secondAttribute="leading" id="FwK-0b-tCB"/>
+                            <constraint firstItem="GRh-zY-L0b" firstAttribute="top" secondItem="QK7-bI-a1t" secondAttribute="bottom" constant="12" id="HnJ-Xk-4gL"/>
+                            <constraint firstItem="zzq-kH-cMx" firstAttribute="top" secondItem="dQX-ly-uw9" secondAttribute="bottom" id="QJK-P0-sTB"/>
+                            <constraint firstItem="QK7-bI-a1t" firstAttribute="leading" secondItem="yWr-Wt-93c" secondAttribute="leading" constant="12" id="UCk-aN-4ko"/>
+                            <constraint firstItem="GRh-zY-L0b" firstAttribute="top" secondItem="zzq-kH-cMx" secondAttribute="bottom" id="l4t-VU-iD6"/>
+                            <constraint firstItem="QK7-bI-a1t" firstAttribute="leading" secondItem="yWr-Wt-93c" secondAttribute="leadingMargin" constant="12" id="o1w-1Z-tGI"/>
+                            <constraint firstItem="GRh-zY-L0b" firstAttribute="top" secondItem="QK7-bI-a1t" secondAttribute="bottom" constant="12" id="zXu-k0-bNq"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="o1w-1Z-tGI"/>
+                                <exclude reference="HnJ-Xk-4gL"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <navigationItem key="navigationItem" id="D9g-eh-Rts">
+                        <nil key="title"/>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="containerView" destination="zzq-kH-cMx" id="FyN-hU-qNy"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bLC-zD-bcW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="518" y="-3122"/>
         </scene>
         <!--Twitter Example View Controller-->
         <scene sceneID="Zfp-Dk-WxL">
@@ -780,6 +858,37 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oKR-jW-Bht" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="518" y="-1717"/>
+        </scene>
+        <!--Nav Controller-->
+        <scene sceneID="yiG-ab-KMy">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="43f-dC-KhS" customClass="NavController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" translucent="NO" id="1b5-Do-dmE">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" white="0.91000000000000003" alpha="1" colorSpace="calibratedWhite"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" type="system" weight="light" pointSize="16"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="textShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="dXT-Ye-Odt">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="gSw-2t-EVE" kind="relationship" relationship="rootViewController" id="a0o-um-ao6"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pww-74-ctS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-229" y="-3122"/>
         </scene>
         <!--Nav Controller-->
         <scene sceneID="rMg-po-1om">

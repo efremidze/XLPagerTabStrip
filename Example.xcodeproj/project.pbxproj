@@ -19,6 +19,7 @@
 		287D0A7D1C4B7B55004566D6 /* XLPagerTabStrip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 287D0A7A1C4B7B26004566D6 /* XLPagerTabStrip.framework */; };
 		287D0A7E1C4B7B55004566D6 /* XLPagerTabStrip.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 287D0A7A1C4B7B26004566D6 /* XLPagerTabStrip.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		28F828D01C4B714D00330CF4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F828CF1C4B714D00330CF4 /* AppDelegate.swift */; };
+		8B60040B1C9E10610081F590 /* PinterestExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B60040A1C9E10610081F590 /* PinterestExampleViewController.swift */; };
 		CB2125DE1C52A80E002DAF42 /* TwitterExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2125DD1C52A80E002DAF42 /* TwitterExampleViewController.swift */; };
 		CB3697BF1C5177B4001FC5F8 /* ButtonBarExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB3697BE1C5177B4001FC5F8 /* ButtonBarExampleViewController.swift */; };
 		CB71C6EB1C4EB964008EC806 /* SegmentedExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB71C6EA1C4EB964008EC806 /* SegmentedExampleViewController.swift */; };
@@ -93,6 +94,7 @@
 		28F828DB1C4B714D00330CF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Example/Info.plist; sourceTree = "<group>"; };
 		28F828E01C4B714D00330CF4 /* ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		28F828E61C4B714D00330CF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Example/ExampleUITests/Info.plist; sourceTree = "<group>"; };
+		8B60040A1C9E10610081F590 /* PinterestExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinterestExampleViewController.swift; sourceTree = "<group>"; };
 		CB2125DD1C52A80E002DAF42 /* TwitterExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TwitterExampleViewController.swift; path = Example/TwitterExampleViewController.swift; sourceTree = "<group>"; };
 		CB3697BE1C5177B4001FC5F8 /* ButtonBarExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ButtonBarExampleViewController.swift; path = Example/Example/ButtonBarExampleViewController.swift; sourceTree = SOURCE_ROOT; };
 		CB71C6EA1C4EB964008EC806 /* SegmentedExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SegmentedExampleViewController.swift; path = Example/SegmentedExampleViewController.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				CBA0A2031C5033B400C5748C /* ReloadExampleViewController.swift */,
 				CBBD435E1C5274AE001A748E /* NavButtonBarExampleViewController.swift */,
 				CB2125DD1C52A80E002DAF42 /* TwitterExampleViewController.swift */,
+				8B60040A1C9E10610081F590 /* PinterestExampleViewController.swift */,
 			);
 			name = Demo;
 			sourceTree = "<group>";
@@ -383,6 +386,7 @@
 				CB3697BF1C5177B4001FC5F8 /* ButtonBarExampleViewController.swift in Sources */,
 				285DA2881C569AA2000908CA /* ChildExampleViewController.swift in Sources */,
 				CBA0A1FF1C50304500C5748C /* BarExampleViewController.swift in Sources */,
+				8B60040B1C9E10610081F590 /* PinterestExampleViewController.swift in Sources */,
 				285718181C568336004D7E7B /* DataProvider.swift in Sources */,
 				CB2125DE1C52A80E002DAF42 /* TwitterExampleViewController.swift in Sources */,
 				285DA2891C569AA2000908CA /* TableChildExampleViewController.swift in Sources */,
