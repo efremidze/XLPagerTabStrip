@@ -37,6 +37,7 @@ public struct PinterestPagerTabStripSettings {
 public class PinterestPagerTabStripViewController: PagerTabStripViewController, PagerTabStripDataSource, PagerTabStripIsProgressiveDelegate {
         
     public var settings = PinterestPagerTabStripSettings()
+    public var changeCurrentIndexProgressive: ((progressPercentage: CGFloat, changeCurrentIndex: Bool, animated: Bool) -> Void)?
     
     private lazy var switchView: DGRunkeeperSwitch! = { [unowned self] in
         let switchView = DGRunkeeperSwitch()
@@ -81,56 +82,17 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
         reloadSwitchView()
     }
     
-    func selectedIndexChanged(index: CGFloat) {
-//        shouldUpdateSwitchView = false
-//        
-//        let oldCurrentIndex = currentIndex
-//        let newCurrentIndex = currentIndex + (index > CGFloat(currentIndex) ? 1 : -1)
-//        let changeCurrentIndex = newCurrentIndex != oldCurrentIndex
-//        
-//        let (fromIndex, toIndex, scrollPercentage) = progressiveIndicatorData(newCurrentIndex)
-//        pagerTabStripViewController(self, updateIndicatorFromIndex: fromIndex, toIndex: toIndex, withProgressPercentage: scrollPercentage, indexWasChanged: changeCurrentIndex)
-
-        
-//        pagerTabStripViewController(self, updateIndicatorFromIndex: oldCurrentIndex, toIndex: newCurrentIndex, withProgressPercentage: round((index % 1.0) * pow(10.0, 2)) / pow(10.0, 2), indexWasChanged: changeCurrentIndex)
-    }
-    
-    private func progressiveIndicatorData(virtualPage: Int) -> (Int, Int, CGFloat) {
-        let count = viewControllers.count
-        var fromIndex = currentIndex
-        var toIndex = currentIndex
-        let direction = swipeDirection
-        
-        if direction == .Left {
-            if virtualPage > count - 1 {
-                fromIndex = count - 1
-                toIndex = count
-            }
-            else {
-                if self.scrollPercentage >= 0.5 {
-                    fromIndex = max(toIndex - 1, 0)
-                }
-                else {
-                    toIndex = fromIndex + 1
-                }
-            }
+    func selectedIndexChanged(index: CGFloat, animated: Bool) {
+        shouldUpdateSwitchView = false
+        if animated {
+            UIView.animateWithDuration(switchView.animationDuration, delay: 0, options: [.CurveEaseOut], animations: {
+                self.containerView.contentOffset.x = index * self.containerView.bounds.width
+            }, completion: { _ in
+                self.shouldUpdateSwitchView = true
+            })
+        } else {
+            self.containerView.contentOffset.x = index * self.containerView.bounds.width
         }
-        else if direction == .Right {
-            if virtualPage < 0 {
-                fromIndex = 0
-                toIndex = -1
-            }
-            else {
-                if self.scrollPercentage > 0.5 {
-                    fromIndex = min(toIndex + 1, count - 1)
-                }
-                else {
-                    toIndex = fromIndex - 1
-                }
-            }
-        }
-        let scrollPercentage = pagerBehaviour.isElasticIndicatorLimit ? self.scrollPercentage : ((toIndex < 0 || toIndex >= count) ? 0.0 : self.scrollPercentage)
-        return (fromIndex, toIndex, scrollPercentage)
     }
     
     func reloadSwitchView() {
@@ -144,25 +106,20 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
     }
     
     public func pagerTabStripViewController(pagerTabStripViewController: PagerTabStripViewController, updateIndicatorFromIndex fromIndex: Int, toIndex: Int, withProgressPercentage progressPercentage: CGFloat, indexWasChanged: Bool) {
-        guard shouldUpdateSwitchView else { return }
-        var index = CGFloat(toIndex)
-        if progressPercentage < 1 {
-            index = CGFloat(fromIndex)
-            if toIndex > fromIndex {
-                index += progressPercentage
-            } else {
-                index -= progressPercentage
+        if shouldUpdateSwitchView {
+            var index = CGFloat(toIndex)
+            if progressPercentage < 1 {
+                index = CGFloat(fromIndex)
+                if toIndex > fromIndex {
+                    index += progressPercentage
+                } else {
+                    index -= progressPercentage
+                }
             }
+            index = max(0, min(CGFloat(viewControllers.count) - 1, index))
+            switchView.setSelectedIndex(index, animated: false)
         }
-        index = max(0, min(CGFloat(viewControllers.count) - 1, index))
-        switchView.setSelectedIndex(index, animated: false)
-    }
-    
-    // MARK: - UIScrollViewDelegate
-    
-    public override func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
-        super.scrollViewDidEndScrollingAnimation(scrollView)
-        shouldUpdateSwitchView = true
+        changeCurrentIndexProgressive?(progressPercentage: progressPercentage, changeCurrentIndex: indexWasChanged, animated: true)
     }
     
 }

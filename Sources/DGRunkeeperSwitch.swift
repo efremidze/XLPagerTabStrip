@@ -78,7 +78,7 @@ public class DGRunkeeperSwitch: UIControl {
     }
     
     private(set) public var selectedIndex: CGFloat = 0
-    public var selectedIndexChanged: (CGFloat -> ())?
+    public var selectedIndexChanged: ((index: CGFloat, animated: Bool) -> ())?
     
     public var animationDuration: NSTimeInterval = 0.3
     public var animationSpringDamping: CGFloat = 0.75
@@ -137,10 +137,10 @@ public class DGRunkeeperSwitch: UIControl {
         selectedTitleLabelsContentView.layer.mask = titleMaskView.layer
         
         // Gestures
-        tapGesture = UITapGestureRecognizer(target: self, action: "tapped:")
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped))
         addGestureRecognizer(tapGesture)
         
-        panGesture = UIPanGestureRecognizer(target: self, action: "pan:")
+        panGesture = UIPanGestureRecognizer(target: self, action: #selector(pan))
         panGesture.delegate = self
         addGestureRecognizer(panGesture)
         
@@ -169,7 +169,7 @@ public class DGRunkeeperSwitch: UIControl {
         let location = gesture.locationInView(self)
         let i = floor(index(forX: location.x))
         setSelectedIndex(i, animated: true)
-        selectedIndexChanged?(i)
+        selectedIndexChanged?(index: i, animated: true)
     }
     
     func pan(gesture: UIPanGestureRecognizer!) {
@@ -180,11 +180,11 @@ public class DGRunkeeperSwitch: UIControl {
             frame.origin.x = initialX + gesture.translationInView(self).x
             frame.origin.x = max(min(frame.origin.x, bounds.width - selectedBackgroundInset - frame.width), selectedBackgroundInset)
             selectedBackgroundView.frame = frame
-            selectedIndexChanged?(index(forX: selectedBackgroundView.center.x))
+            selectedIndexChanged?(index: index(forX: selectedBackgroundView.frame.minX), animated: false)
         } else if gesture.state == .Ended || gesture.state == .Failed || gesture.state == .Cancelled {
             let i = adjustedIndex(floor(index(forX: selectedBackgroundView.center.x)))
             setSelectedIndex(i, animated: true)
-            selectedIndexChanged?(i)
+            selectedIndexChanged?(index: i, animated: true)
         }
     }
     
@@ -207,15 +207,12 @@ public class DGRunkeeperSwitch: UIControl {
         
         self.selectedIndex = selectedIndex
         if animated {
-            UIView.animateWithDuration(animationDuration, delay: 0.0, usingSpringWithDamping: animationSpringDamping, initialSpringVelocity: animationInitialSpringVelocity, options: [UIViewAnimationOptions.BeginFromCurrentState, UIViewAnimationOptions.CurveEaseOut], animations: { () -> Void in
+            if !catchHalfSwitch {
+                self.sendActionsForControlEvents(.ValueChanged)
+            }
+            UIView.animateWithDuration(animationDuration, delay: 0.0, usingSpringWithDamping: animationSpringDamping, initialSpringVelocity: animationInitialSpringVelocity, options: [UIViewAnimationOptions.BeginFromCurrentState, UIViewAnimationOptions.CurveEaseOut], animations: {
                 self.layoutSubviews()
-                }, completion: { (finished) -> Void in
-                    if finished {
-                        if (!catchHalfSwitch) {
-                            self.sendActionsForControlEvents(.ValueChanged)
-                        }
-                    }
-            })
+            }, completion: nil)
         } else {
             layoutSubviews()
             sendActionsForControlEvents(.ValueChanged)
