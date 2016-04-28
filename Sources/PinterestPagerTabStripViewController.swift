@@ -33,6 +33,7 @@ public struct PinterestPagerTabStripSettings {
         public var switchSelectedTitleColor = UIColor(white: 0.15, alpha: 1)
         public var switchTitleFont = UIFont.boldSystemFontOfSize(15)
         public var switchCornerRadius: CGFloat = 4
+        public var switchSelectedBackgroundInset: CGFloat = 2
     }
     
     public var style = Style()
@@ -78,6 +79,7 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
         switchView.selectedTitleColor = settings.style.switchSelectedTitleColor
         switchView.titleFont = settings.style.switchTitleFont
         switchView.cornerRadius = settings.style.switchCornerRadius
+        switchView.selectedBackgroundInset = settings.style.switchSelectedBackgroundInset
         switchView.selectedIndexChanged = selectedIndexChanged
         reloadSwitchView()
     }

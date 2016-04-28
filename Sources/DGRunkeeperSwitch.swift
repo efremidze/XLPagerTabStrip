@@ -43,10 +43,6 @@ public class DGRunkeeperSwitch: UIControl {
         get { return titleLabels.map { $0.text! } }
     }
     
-    public var selectedBackgroundInset: CGFloat = 2.0 {
-        didSet { setNeedsLayout() }
-    }
-    
     public var selectedBackgroundColor: UIColor! {
         set { selectedBackgroundView.backgroundColor = newValue }
         get { return selectedBackgroundView.backgroundColor }
@@ -70,6 +66,10 @@ public class DGRunkeeperSwitch: UIControl {
             selectedBackgroundView.layer.cornerRadius = cornerRadius
             titleMaskView.layer.cornerRadius = cornerRadius
         }
+    }
+    
+    public var selectedBackgroundInset: CGFloat = 2.0 {
+        didSet { setNeedsLayout() }
     }
     
     private(set) public var selectedIndex: CGFloat = 0
