@@ -27,7 +27,12 @@ import Foundation
 public struct PinterestPagerTabStripSettings {
     
     public struct Style {
-        public var titleColor = UIColor.whiteColor()
+        public var switchBackgroundColor = UIColor(white: 0.84, alpha: 1)
+        public var switchSelectedBackgroundColor = UIColor(white: 0.97, alpha: 1)
+        public var switchTitleColor = UIColor(white: 0.62, alpha: 1)
+        public var switchSelectedTitleColor = UIColor(white: 0.15, alpha: 1)
+        public var switchTitleFont = UIFont.boldSystemFontOfSize(15)
+        public var switchCornerRadius: CGFloat = 4
     }
     
     public var style = Style()
@@ -39,21 +44,9 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
     public var settings = PinterestPagerTabStripSettings()
     public var changeCurrentIndexProgressive: ((progressPercentage: CGFloat, changeCurrentIndex: Bool, animated: Bool) -> Void)?
     
-    private lazy var switchView: DGRunkeeperSwitch! = { [unowned self] in
-        let switchView = DGRunkeeperSwitch()
-        switchView.backgroundColor = UIColor(white: 0.84, alpha: 1)
-        switchView.selectedBackgroundColor = UIColor(white: 0.97, alpha: 1)
-        switchView.titleColor = UIColor(white: 0.62, alpha: 1)
-        switchView.selectedTitleColor = UIColor(white: 0.15, alpha: 1)
-        switchView.titleFont = .boldSystemFontOfSize(15)
-        switchView.cornerRadius = 4
-        switchView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        return switchView
-    }()
+    @IBOutlet public lazy var switchView: DGRunkeeperSwitch! = DGRunkeeperSwitch()
     
     private var shouldUpdateSwitchView = true
-    
-    private var lastIndex = 0
     
     override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -71,28 +64,27 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
         super.viewDidLoad()
         
         if switchView.superview == nil {
+            guard let navigationController = navigationController else {
+                fatalError("PinterestPagerTabStripViewController should be embedded in a UINavigationController")
+            }
+            switchView.frame.size.width = navigationController.navigationBar.bounds.width - 20
+            switchView.frame.size.height = navigationController.navigationBar.bounds.height - 8
+            switchView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
             navigationItem.titleView = switchView
         }
-        guard let navigationController = navigationController  else {
-            fatalError("PinterestPagerTabStripViewController should be embedded in a UINavigationController")
-        }
-        switchView.frame.size.width = navigationController.navigationBar.bounds.width - 20
-        switchView.frame.size.height = navigationController.navigationBar.bounds.height - 8
+        switchView.backgroundColor = settings.style.switchBackgroundColor
+        switchView.selectedBackgroundColor = settings.style.switchSelectedBackgroundColor
+        switchView.titleColor = settings.style.switchTitleColor
+        switchView.selectedTitleColor = settings.style.switchSelectedTitleColor
+        switchView.titleFont = settings.style.switchTitleFont
+        switchView.cornerRadius = settings.style.switchCornerRadius
         switchView.selectedIndexChanged = selectedIndexChanged
         reloadSwitchView()
     }
     
-    func selectedIndexChanged(index: CGFloat, animated: Bool) {
-        shouldUpdateSwitchView = false
-        if animated {
-            UIView.animateWithDuration(switchView.animationDuration, delay: 0, options: [.CurveEaseOut], animations: {
-                self.containerView.contentOffset.x = index * self.containerView.bounds.width
-            }, completion: { _ in
-                self.shouldUpdateSwitchView = true
-            })
-        } else {
-            self.containerView.contentOffset.x = index * self.containerView.bounds.width
-        }
+    func selectedIndexChanged(index: CGFloat, finished: Bool) {
+        shouldUpdateSwitchView = finished
+        containerView.contentOffset.x = index * containerView.bounds.width
     }
     
     func reloadSwitchView() {
@@ -117,7 +109,7 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
                 }
             }
             index = max(0, min(CGFloat(viewControllers.count) - 1, index))
-            switchView.setSelectedIndex(index, animated: false)
+            switchView.setSelectedIndex(index, animated: false, finished: true)
         }
         changeCurrentIndexProgressive?(progressPercentage: progressPercentage, changeCurrentIndex: indexWasChanged, animated: true)
     }

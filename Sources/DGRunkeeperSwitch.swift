@@ -78,7 +78,7 @@ public class DGRunkeeperSwitch: UIControl {
     }
     
     private(set) public var selectedIndex: CGFloat = 0
-    public var selectedIndexChanged: ((index: CGFloat, animated: Bool) -> ())?
+    public var selectedIndexChanged: ((index: CGFloat, finished: Bool) -> ())?
     
     public var animationDuration: NSTimeInterval = 0.3
     public var animationSpringDamping: CGFloat = 0.75
@@ -168,8 +168,7 @@ public class DGRunkeeperSwitch: UIControl {
     func tapped(gesture: UITapGestureRecognizer!) {
         let location = gesture.locationInView(self)
         let i = floor(index(forX: location.x))
-        setSelectedIndex(i, animated: true)
-        selectedIndexChanged?(index: i, animated: true)
+        setSelectedIndex(i, animated: true, finished: true)
     }
     
     func pan(gesture: UIPanGestureRecognizer!) {
@@ -180,11 +179,10 @@ public class DGRunkeeperSwitch: UIControl {
             frame.origin.x = initialX + gesture.translationInView(self).x
             frame.origin.x = max(min(frame.origin.x, bounds.width - selectedBackgroundInset - frame.width), selectedBackgroundInset)
             selectedBackgroundView.frame = frame
-            selectedIndexChanged?(index: index(forX: selectedBackgroundView.frame.minX), animated: false)
+            selectedIndexChanged?(index: index(forX: selectedBackgroundView.frame.minX - selectedBackgroundInset), finished: false)
         } else if gesture.state == .Ended || gesture.state == .Failed || gesture.state == .Cancelled {
-            let i = adjustedIndex(floor(index(forX: selectedBackgroundView.center.x)))
-            setSelectedIndex(i, animated: true)
-            selectedIndexChanged?(index: i, animated: true)
+            let i = adjustedIndex(floor(index(forX: selectedBackgroundView.center.x - selectedBackgroundInset)))
+            setSelectedIndex(i, animated: true, finished: true)
         }
     }
     
@@ -196,7 +194,7 @@ public class DGRunkeeperSwitch: UIControl {
         return max(0, min(CGFloat(titleLabels.count - 1), index))
     }
     
-    public func setSelectedIndex(selectedIndex: CGFloat, animated: Bool) {
+    public func setSelectedIndex(selectedIndex: CGFloat, animated: Bool, finished: Bool) {
         guard 0..<CGFloat(titleLabels.count) ~= selectedIndex else { return }
         
         // Reset switch on half pan gestures
@@ -212,9 +210,11 @@ public class DGRunkeeperSwitch: UIControl {
             }
             UIView.animateWithDuration(animationDuration, delay: 0.0, usingSpringWithDamping: animationSpringDamping, initialSpringVelocity: animationInitialSpringVelocity, options: [UIViewAnimationOptions.BeginFromCurrentState, UIViewAnimationOptions.CurveEaseOut], animations: {
                 self.layoutSubviews()
+                self.selectedIndexChanged?(index: selectedIndex, finished: finished)
             }, completion: nil)
         } else {
             layoutSubviews()
+            selectedIndexChanged?(index: selectedIndex, finished: finished)
             sendActionsForControlEvents(.ValueChanged)
         }
     }
