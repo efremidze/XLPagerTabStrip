@@ -82,9 +82,17 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
         reloadSwitchView()
     }
     
-    func selectedIndexChanged(index: CGFloat, finished: Bool) {
-        shouldUpdateSwitchView = finished
-        containerView.contentOffset.x = index * containerView.bounds.width
+    func selectedIndexChanged(index: CGFloat, animated: Bool) {
+        shouldUpdateSwitchView = false
+        if animated {
+            UIView.animateWithDuration(switchView.animationDuration, delay: 0, usingSpringWithDamping: switchView.animationSpringDamping, initialSpringVelocity: switchView.animationInitialSpringVelocity, options: [.BeginFromCurrentState, .CurveEaseOut], animations: {
+                self.containerView.contentOffset.x = index * self.containerView.bounds.width
+            }, completion: { _ in
+                self.shouldUpdateSwitchView = true
+            })
+        } else {
+            containerView.contentOffset.x = index * containerView.bounds.width
+        }
     }
     
     func reloadSwitchView() {

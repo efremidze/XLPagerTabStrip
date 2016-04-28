@@ -78,7 +78,7 @@ public class DGRunkeeperSwitch: UIControl {
     }
     
     private(set) public var selectedIndex: CGFloat = 0
-    public var selectedIndexChanged: ((index: CGFloat, finished: Bool) -> ())?
+    public var selectedIndexChanged: ((index: CGFloat, animated: Bool) -> ())?
     
     public var animationDuration: NSTimeInterval = 0.3
     public var animationSpringDamping: CGFloat = 0.75
@@ -167,8 +167,9 @@ public class DGRunkeeperSwitch: UIControl {
     
     func tapped(gesture: UITapGestureRecognizer!) {
         let location = gesture.locationInView(self)
-        let i = floor(index(forX: location.x))
+        let i = adjustedIndex(floor(index(forX: location.x)))
         setSelectedIndex(i, animated: true, finished: true)
+        selectedIndexChanged?(index: i, animated: true)
     }
     
     func pan(gesture: UIPanGestureRecognizer!) {
@@ -179,10 +180,11 @@ public class DGRunkeeperSwitch: UIControl {
             frame.origin.x = initialX + gesture.translationInView(self).x
             frame.origin.x = max(min(frame.origin.x, bounds.width - selectedBackgroundInset - frame.width), selectedBackgroundInset)
             selectedBackgroundView.frame = frame
-            selectedIndexChanged?(index: index(forX: selectedBackgroundView.frame.minX - selectedBackgroundInset), finished: false)
+            selectedIndexChanged?(index: index(forX: selectedBackgroundView.frame.minX - selectedBackgroundInset), animated: false)
         } else if gesture.state == .Ended || gesture.state == .Failed || gesture.state == .Cancelled {
             let i = adjustedIndex(floor(index(forX: selectedBackgroundView.center.x - selectedBackgroundInset)))
             setSelectedIndex(i, animated: true, finished: true)
+            selectedIndexChanged?(index: i, animated: true)
         }
     }
     
@@ -198,23 +200,21 @@ public class DGRunkeeperSwitch: UIControl {
         guard 0..<CGFloat(titleLabels.count) ~= selectedIndex else { return }
         
         // Reset switch on half pan gestures
-        var catchHalfSwitch = false
+        var catchHalfSwitch:Bool = false
         if self.selectedIndex == selectedIndex {
             catchHalfSwitch = true
         }
         
         self.selectedIndex = selectedIndex
         if animated {
-            if !catchHalfSwitch {
+            if (!catchHalfSwitch) {
                 self.sendActionsForControlEvents(.ValueChanged)
             }
-            UIView.animateWithDuration(animationDuration, delay: 0.0, usingSpringWithDamping: animationSpringDamping, initialSpringVelocity: animationInitialSpringVelocity, options: [UIViewAnimationOptions.BeginFromCurrentState, UIViewAnimationOptions.CurveEaseOut], animations: {
+            UIView.animateWithDuration(animationDuration, delay: 0.0, usingSpringWithDamping: animationSpringDamping, initialSpringVelocity: animationInitialSpringVelocity, options: [UIViewAnimationOptions.BeginFromCurrentState, UIViewAnimationOptions.CurveEaseOut], animations: { () -> Void in
                 self.layoutSubviews()
-                self.selectedIndexChanged?(index: selectedIndex, finished: finished)
             }, completion: nil)
         } else {
             layoutSubviews()
-            selectedIndexChanged?(index: selectedIndex, finished: finished)
             sendActionsForControlEvents(.ValueChanged)
         }
     }
