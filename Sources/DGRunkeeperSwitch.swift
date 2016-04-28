@@ -11,7 +11,6 @@ import UIKit
 // MARK: -
 // MARK: DGRunkeeperSwitch
 
-@IBDesignable
 public class DGRunkeeperSwitch: UIControl {
     
     // MARK: -
@@ -48,23 +47,19 @@ public class DGRunkeeperSwitch: UIControl {
         didSet { setNeedsLayout() }
     }
     
-    @IBInspectable
     public var selectedBackgroundColor: UIColor! {
         set { selectedBackgroundView.backgroundColor = newValue }
         get { return selectedBackgroundView.backgroundColor }
     }
     
-    @IBInspectable
     public var titleColor: UIColor! {
         didSet { titleLabels.forEach { $0.textColor = titleColor } }
     }
     
-    @IBInspectable
     public var selectedTitleColor: UIColor! {
         didSet { selectedTitleLabels.forEach { $0.textColor = selectedTitleColor } }
     }
     
-    @IBInspectable
     public var titleFont: UIFont! {
         didSet { (titleLabels + selectedTitleLabels).forEach { $0.font = titleFont } }
     }
