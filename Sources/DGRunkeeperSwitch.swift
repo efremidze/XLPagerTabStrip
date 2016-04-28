@@ -44,9 +44,6 @@ public class DGRunkeeperSwitch: UIControl {
         get { return titleLabels.map { $0.text! } }
     }
     
-    @IBInspectable
-    private(set) public var selectedIndex: Int = 0
-    
     public var selectedBackgroundInset: CGFloat = 2.0 {
         didSet { setNeedsLayout() }
     }
@@ -80,6 +77,9 @@ public class DGRunkeeperSwitch: UIControl {
         }
     }
     
+    private(set) public var selectedIndex: CGFloat = 0
+    public var selectedIndexChanged: (CGFloat -> ())?
+    
     public var animationDuration: NSTimeInterval = 0.3
     public var animationSpringDamping: CGFloat = 0.75
     public var animationInitialSpringVelocity: CGFloat = 0.0
@@ -95,12 +95,12 @@ public class DGRunkeeperSwitch: UIControl {
     
     private(set) var selectedBackgroundView = UIView()
     
-    private var titleMaskView: UIView = UIView()
+    private var titleMaskView = UIView()
     
     private var tapGesture: UITapGestureRecognizer!
     private var panGesture: UIPanGestureRecognizer!
     
-    private var initialSelectedBackgroundViewFrame: CGRect?
+    private var initialX: CGFloat = 0
     
     // MARK: -
     // MARK: Constructors
@@ -167,30 +167,40 @@ public class DGRunkeeperSwitch: UIControl {
     
     func tapped(gesture: UITapGestureRecognizer!) {
         let location = gesture.locationInView(self)
-        let index = Int(location.x / (bounds.width / CGFloat(titleLabels.count)))
-        setSelectedIndex(index, animated: true)
+        let i = floor(index(forX: location.x))
+        setSelectedIndex(i, animated: true)
+        selectedIndexChanged?(i)
     }
     
     func pan(gesture: UIPanGestureRecognizer!) {
         if gesture.state == .Began {
-            initialSelectedBackgroundViewFrame = selectedBackgroundView.frame
+            initialX = selectedBackgroundView.frame.minX
         } else if gesture.state == .Changed {
-            var frame = initialSelectedBackgroundViewFrame!
-            frame.origin.x += gesture.translationInView(self).x
+            var frame = selectedBackgroundView.frame
+            frame.origin.x = initialX + gesture.translationInView(self).x
             frame.origin.x = max(min(frame.origin.x, bounds.width - selectedBackgroundInset - frame.width), selectedBackgroundInset)
             selectedBackgroundView.frame = frame
+            selectedIndexChanged?(index(forX: selectedBackgroundView.center.x))
         } else if gesture.state == .Ended || gesture.state == .Failed || gesture.state == .Cancelled {
-            let targetX = selectedBackgroundView.center.x + (gesture.velocityInView(self).x * (selectedBackgroundView.bounds.width / 1500))
-            let index = max(0, min(titleLabels.count - 1, Int(targetX / (bounds.width / CGFloat(titleLabels.count)))))
-            setSelectedIndex(index, animated: true)
+            let i = adjustedIndex(floor(index(forX: selectedBackgroundView.center.x)))
+            setSelectedIndex(i, animated: true)
+            selectedIndexChanged?(i)
         }
     }
     
-    public func setSelectedIndex(selectedIndex: Int, animated: Bool) {
-        guard 0..<titleLabels.count ~= selectedIndex else { return }
+    private func index(forX x: CGFloat) -> CGFloat {
+        return x / (bounds.width / CGFloat(titleLabels.count))
+    }
+    
+    private func adjustedIndex(index: CGFloat) -> CGFloat {
+        return max(0, min(CGFloat(titleLabels.count - 1), index))
+    }
+    
+    public func setSelectedIndex(selectedIndex: CGFloat, animated: Bool) {
+        guard 0..<CGFloat(titleLabels.count) ~= selectedIndex else { return }
         
         // Reset switch on half pan gestures
-        var catchHalfSwitch:Bool = false
+        var catchHalfSwitch = false
         if self.selectedIndex == selectedIndex {
             catchHalfSwitch = true
         }
