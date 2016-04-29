@@ -22,28 +22,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
-
-public struct PinterestPagerTabStripSettings {
-    
-    public struct Style {
-        public var switchBackgroundColor = UIColor(white: 0.84, alpha: 1)
-        public var switchSelectedBackgroundColor = UIColor(white: 0.97, alpha: 1)
-        public var switchTitleColor = UIColor(white: 0.62, alpha: 1)
-        public var switchSelectedTitleColor = UIColor(white: 0.15, alpha: 1)
-        public var switchTitleFont = UIFont.boldSystemFontOfSize(15)
-        public var switchCornerRadius: CGFloat = 4
-        public var switchSelectedBackgroundInset: CGFloat = 2
-    }
-    
-    public var style = Style()
-    
-}
+import UIKit
 
 public class PinterestPagerTabStripViewController: PagerTabStripViewController, PagerTabStripDataSource, PagerTabStripIsProgressiveDelegate {
-        
-    public var settings = PinterestPagerTabStripSettings()
-    public var changeCurrentIndexProgressive: ((progressPercentage: CGFloat, changeCurrentIndex: Bool, animated: Bool) -> Void)?
     
     @IBOutlet public lazy var switchView: DGRunkeeperSwitch! = DGRunkeeperSwitch()
     
@@ -73,15 +54,19 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
             switchView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
             navigationItem.titleView = switchView
         }
-        switchView.backgroundColor = settings.style.switchBackgroundColor
-        switchView.selectedBackgroundColor = settings.style.switchSelectedBackgroundColor
-        switchView.titleColor = settings.style.switchTitleColor
-        switchView.selectedTitleColor = settings.style.switchSelectedTitleColor
-        switchView.titleFont = settings.style.switchTitleFont
-        switchView.cornerRadius = settings.style.switchCornerRadius
-        switchView.selectedBackgroundInset = settings.style.switchSelectedBackgroundInset
+        switchView.backgroundColor = UIColor(white: 0.84, alpha: 1)
+        switchView.selectedBackgroundColor = UIColor(white: 0.97, alpha: 1)
+        switchView.titleColor = UIColor(white: 0.62, alpha: 1)
+        switchView.selectedTitleColor = UIColor(white: 0.15, alpha: 1)
+        switchView.titleFont = .boldSystemFontOfSize(15)
+        switchView.cornerRadius = 4
+        switchView.selectedBackgroundInset = 2
         switchView.selectedIndexChanged = selectedIndexChanged
         reloadSwitchView()
+    }
+    
+    func reloadSwitchView() {
+        switchView.titles = viewControllers.map { ($0 as! IndicatorInfoProvider).indicatorInfoForPagerTabStrip(self).title }
     }
     
     func selectedIndexChanged(index: CGFloat, animated: Bool) {
@@ -95,10 +80,6 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
         }
         
         (navigationController?.view ?? view).userInteractionEnabled = true
-    }
-    
-    func reloadSwitchView() {
-        switchView.titles = viewControllers.map { ($0 as! IndicatorInfoProvider).indicatorInfoForPagerTabStrip(self).title }
     }
     
     // MARK: - PagerTabStripIsProgressiveDelegate
@@ -121,7 +102,6 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
             index = max(0, min(CGFloat(viewControllers.count) - 1, index))
             switchView.setSelectedIndex(index, animated: false)
         }
-        changeCurrentIndexProgressive?(progressPercentage: progressPercentage, changeCurrentIndex: indexWasChanged, animated: true)
     }
     
     // MARK: - UIScrollViewDelegate
