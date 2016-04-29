@@ -75,7 +75,6 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
         if index == floor(index) {
             moveToViewControllerAtIndex(Int(index), animated: animated)
         } else {
-            (navigationController?.view ?? view).userInteractionEnabled = false
             containerView.setContentOffset(CGPointMake(index * containerView.bounds.width, 0), animated: animated)
         }
         
