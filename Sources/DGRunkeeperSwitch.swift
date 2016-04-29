@@ -163,7 +163,7 @@ public class DGRunkeeperSwitch: UIControl {
     func tapped(gesture: UITapGestureRecognizer!) {
         let location = gesture.locationInView(self)
         let i = adjustedIndex(floor(index(forX: location.x)))
-        setSelectedIndex(i, animated: true, finished: true)
+        setSelectedIndex(i, animated: true)
         selectedIndexChanged?(index: i, animated: true)
     }
     
@@ -178,7 +178,7 @@ public class DGRunkeeperSwitch: UIControl {
             selectedIndexChanged?(index: index(forX: selectedBackgroundView.frame.minX - selectedBackgroundInset), animated: false)
         } else if gesture.state == .Ended || gesture.state == .Failed || gesture.state == .Cancelled {
             let i = adjustedIndex(floor(index(forX: selectedBackgroundView.center.x - selectedBackgroundInset)))
-            setSelectedIndex(i, animated: true, finished: true)
+            setSelectedIndex(i, animated: true)
             selectedIndexChanged?(index: i, animated: true)
         }
     }
@@ -191,7 +191,7 @@ public class DGRunkeeperSwitch: UIControl {
         return max(0, min(CGFloat(titleLabels.count - 1), index))
     }
     
-    public func setSelectedIndex(selectedIndex: CGFloat, animated: Bool, finished: Bool) {
+    public func setSelectedIndex(selectedIndex: CGFloat, animated: Bool) {
         guard 0..<CGFloat(titleLabels.count) ~= selectedIndex else { return }
         
         // Reset switch on half pan gestures
@@ -205,9 +205,12 @@ public class DGRunkeeperSwitch: UIControl {
             if (!catchHalfSwitch) {
                 self.sendActionsForControlEvents(.ValueChanged)
             }
+            userInteractionEnabled = false
             UIView.animateWithDuration(animationDuration, delay: 0.0, usingSpringWithDamping: animationSpringDamping, initialSpringVelocity: animationInitialSpringVelocity, options: [UIViewAnimationOptions.BeginFromCurrentState, UIViewAnimationOptions.CurveEaseOut], animations: { () -> Void in
                 self.layoutSubviews()
-            }, completion: nil)
+            }, completion: { _ in
+                self.userInteractionEnabled = true
+            })
         } else {
             layoutSubviews()
             sendActionsForControlEvents(.ValueChanged)

@@ -86,15 +86,15 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
     
     func selectedIndexChanged(index: CGFloat, animated: Bool) {
         shouldUpdateSwitchView = false
-        if animated {
-            UIView.animateWithDuration(switchView.animationDuration, delay: 0, usingSpringWithDamping: switchView.animationSpringDamping, initialSpringVelocity: switchView.animationInitialSpringVelocity, options: [.BeginFromCurrentState, .CurveEaseOut], animations: {
-                self.containerView.contentOffset.x = index * self.containerView.bounds.width
-            }, completion: { _ in
-                self.shouldUpdateSwitchView = true
-            })
+        
+        if index == floor(index) {
+            moveToViewControllerAtIndex(Int(index), animated: animated)
         } else {
-            containerView.contentOffset.x = index * containerView.bounds.width
+            (navigationController?.view ?? view).userInteractionEnabled = false
+            containerView.setContentOffset(CGPointMake(index * containerView.bounds.width, 0), animated: animated)
         }
+        
+        (navigationController?.view ?? view).userInteractionEnabled = true
     }
     
     func reloadSwitchView() {
@@ -119,9 +119,18 @@ public class PinterestPagerTabStripViewController: PagerTabStripViewController, 
                 }
             }
             index = max(0, min(CGFloat(viewControllers.count) - 1, index))
-            switchView.setSelectedIndex(index, animated: false, finished: true)
+            switchView.setSelectedIndex(index, animated: false)
         }
         changeCurrentIndexProgressive?(progressPercentage: progressPercentage, changeCurrentIndex: indexWasChanged, animated: true)
+    }
+    
+    // MARK: - UIScrollViewDelegate
+    
+    public override func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+        super.scrollViewDidEndScrollingAnimation(scrollView)
+        
+        guard scrollView == containerView else { return }
+        shouldUpdateSwitchView = true
     }
     
 }
